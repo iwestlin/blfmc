@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B站直播粉丝牌换算器 - Bilibili Live Fans Medal Calculator</title>
+    <style type="text/css">
+      body {
+        text-align: center;
+        margin-top: 100px;
+      }
+      #info {
+        display: none;
+      }
+    </style>
+</head>
+
+<body>
+    <input type="text" name="" id="level" placeholder="等级，21-40之间的整数">
+    <input type="text" name="" id="points" placeholder="原力值，默认0">
+    <button id="calc">计算</button>
+    <div id="info">
+      <p>您的氪金总额为 <span id="result"></span></p>
+      <p>再氪 <span id="more"></span> 元即可升级</p>
+    </div>
+    <script type="text/javascript">
+    const LEVELS = {
+        level21: 2000, // 最少1380
+        level22: 2500,
+        level23: 3000,
+        level24: 7500,
+        level25: 15000,
+        level26: 40000,
+        level27: 90000,
+        level28: 160000,
+        level29: 280000,
+        level30: 700000,
+        level31: 1200000,
+        level32: 2000000,
+        level33: 2500000,
+        level34: 3000000,
+        level35: 3500000,
+        level36: 4000000,
+        level37: 7500000,
+        level38: 10000000,
+        level39: 15000000
+    }
+    // console.log(cal_money({level: 40, points: 0})) // 5000000.0 单位元
+    function cal_money ({level, points}) { // level: 当前等级， points: 亲密度
+      const limit = LEVELS[`level${level}`]
+      if (points >= limit) return alert(`等级${level}原力值不能超过${limit}`)
+      if (level === 21 && points < 1380) return alert('等级21时原力值不可能低于1380')
+      const arr = Object.values(LEVELS)
+      let result = points
+      for (let i = 0; i < level - 21; i++) {
+        result += arr[i]
+      }
+      return (result / 10) //.toFixed(1)
+    }
+
+    document.getElementById('calc').onclick = function () {
+      let level = document.getElementById('level').value
+      level = parseInt(level)
+      if (!level || level > 40 || level < 21) return alert('等级请输入21-40之间的整数')
+      let points = document.getElementById('points').value || 0
+      points = parseInt(points)
+      const result = cal_money({level, points})
+      if (!result) return
+      document.getElementById('info').style.display = 'block'
+      document.getElementById('result').innerText = result + ' 元'
+      const limit = LEVELS[`level${level}`]
+      const more = (limit - points) / 10
+      if (more) document.getElementById('more').innerText = more.toFixed(1)
+    }
+    </script>
+</body>
+
+</html>
